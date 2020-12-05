@@ -1,5 +1,6 @@
 (ns aoc2020.day5.main
-  (:require [clojure.java.io :as io]))
+  (:require [clojure.java.io :as io]
+            [clojure.test :refer [deftest testing is]]))
 
 (defn count-bin
   ([bins] (count-bin bins 0))
@@ -17,9 +18,10 @@
     {:row (count-bin (map (partial = \B) up-down))
      :col (count-bin (map (partial = \R) left-right))}))
 
-(= (seat "BFFFBBFRRR") {:row 70 :col 7})
-(= (seat "FFFBBBFRRR") {:row 14 :col 7})
-(= (seat "BBFFBBFRLL") {:row 102 :col 4})
+(deftest seats
+  (is (= (seat "BFFFBBFRRR") {:row 70 :col 7}))
+  (is (= (seat "FFFBBBFRRR") {:row 14 :col 7}))
+  (is (= (seat "BBFFBBFRLL") {:row 102 :col 4})))
 
 (def input (->> (io/resource "input-05.txt")
                 (io/reader)
@@ -39,8 +41,5 @@
      (map seat-id)
      sort
      (partition 2 1)
-     (filter #(not= -1 (apply - %)))
-     first
-     first
-     (+ 1))
-;; => 559
+     (filter #(not= -1 (apply - %))))
+;; => ((558 560)) basically 559
