@@ -43,3 +43,12 @@
      (partition 2 1)
      (filter #(not= -1 (apply - %))))
 ;; => ((558 560)) basically 559
+
+
+;; quite smart direct seat-id
+(defn seat-id2 [s]
+ (read-string (apply str "2r" (map {\F \0 \B \1 \L \0 \R \1} s))))
+(seat-id2 "BFFFBBFRRR")
+(defn seat-id3 [s]
+  (Long/parseLong (apply str (map {\F \0 \B \1 \L \0 \R \1} s)) 2))
+(seat-id3 "BFFFBBFRRR")
