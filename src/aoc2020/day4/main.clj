@@ -60,8 +60,6 @@
 (valid-field {:key "ecl" :value "blu"})
 (valid-field {:key "pid" :value "000000123"})
 
-
-
 (defn check-fields [passport]
   (for [field passport]
     {:field field :valid? (valid-field field)}))
