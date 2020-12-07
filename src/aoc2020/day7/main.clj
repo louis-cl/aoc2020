@@ -73,3 +73,18 @@
 
 (part-2 (into {} rules) "shiny gold")
 ;; => 13264
+
+;; Part 1 with loop
+(let [r-map (->> input (map parse-sentence) reverse-map)]
+     (loop [visited #{}
+            [color & to-visit] ["shiny gold"]]
+       (if-not color
+         (dec (count visited))
+         (recur (conj visited color)
+                (into to-visit (remove visited) (r-map color))))))
+;; Part 2 smaller
+(let [rules (into {} (map parse-sentence input))]
+  ((fn size [color]
+     (reduce + 
+             (for [[n color2] (rules color)]
+               (* n (inc (size color2)))))) "shiny gold"))
