@@ -2,10 +2,8 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]))
 
-(def input (->> (io/resource "input-08.txt")
-                (io/reader)
-                (line-seq)
-                (filter (complement empty?))))
+(def input (with-open [reader (io/reader (io/resource "input-08.txt"))]
+             (doall (filter (complement empty?) (line-seq reader)))))
 
 (def input-sample (str/split-lines "nop +0
 acc +1
@@ -28,7 +26,7 @@ acc +6"))
       :jmp (update data :ptr (partial + arg))
       :acc {:ptr (inc ptr) :acc (+ acc arg)})))
 
-(defn inf-loop? [program]
+(defn has-inf-loop [program]
   (loop [data {:ptr 0 :acc 0}
          executed #{}]
     (cond
@@ -37,16 +35,16 @@ acc +6"))
       :else (recur (run program data) (conj executed (:ptr data))))))
 
 ;; part 1
-(->> input (map parse-instr) inf-loop? second :acc)
+(->> input (map parse-instr) has-inf-loop second :acc)
 ;; => 1528
 
 ;; part 2
 (let [p (mapv parse-instr input)]
   ((loop [[[i [instr arg]] & rest] (map-indexed vector p)]
      (case instr
-       :nop (let [[inf data] (inf-loop? (assoc p i [:jmp arg]))]
+       :nop (let [[inf data] (has-inf-loop (assoc p i [:jmp arg]))]
               (if-not inf data (recur rest)))
-       :jmp (let [[inf data] (inf-loop? (assoc p i [:nop arg]))]
+       :jmp (let [[inf data] (has-inf-loop (assoc p i [:nop arg]))]
               (if-not inf data (recur rest)))
        :acc (recur rest)))
    :acc))
