@@ -23,29 +23,27 @@
 (part-1 sample-input 5)
 ;; => 127
 
-(def input
-  (->> "input-09.txt"
-       io/resource
-       slurp
-       str/split-lines
-       (map #(Long/parseLong %))))
+(def input (->> (read-file "input-09.txt")
+                str/split-lines
+                (map read-string)))
 
 (part-1 input 25)
 ;; => 15690279
 
-(def invalid 15690279)
+(defn part-2 [input]
+  (let [input (vec input)
+        target (part-1 input 25)]
+    (loop [i 0 ;; included
+           j 1 ;; excluded
+           current-sum (first input)]
+      (let [new-sum (+ current-sum (nth input j))]
+        (condp apply [new-sum target]
+          = (let [sum-set (subvec input i (inc j))]
+              (+ (apply max sum-set) (apply min sum-set)))
+          < (recur i (inc j) new-sum)
+          > (recur (inc i) (+ i 2) (nth input (inc i))))))))
 
-(let [input (vec input)
-      target invalid]
-  (loop [i 0 ;; included
-         j 1 ;; excluded
-         current-sum (first input)]
-    (let [new-sum (+ current-sum (nth input j))]
-      (condp apply [new-sum target]
-        = (let [sum-set (subvec input i (inc j))]
-            (+ (apply max sum-set) (apply min sum-set)))
-        < (recur i (inc j) new-sum)
-        > (recur (inc i) (+ i 2) (nth input (inc i)))))))
+(part-2 input)
 ;; => 2174232
 
 ;; (cond
