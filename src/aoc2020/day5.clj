@@ -1,4 +1,4 @@
-(ns aoc2020.day5.main
+(ns aoc2020.day5
   (:require [clojure.java.io :as io]
             [clojure.test :refer [deftest testing is]]))
 

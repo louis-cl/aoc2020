@@ -1,4 +1,4 @@
-(ns aoc2020.day3.main
+(ns aoc2020.day3
   (:require [clojure.java.io :as io]))
 
 (def demo-input (->> (io/resource "input-03-sample.txt")
