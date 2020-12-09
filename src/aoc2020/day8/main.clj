@@ -49,3 +49,14 @@ acc +6"))
        :acc (recur rest)))
    :acc))
 ;; => 640
+
+;; another way using for instead
+(let [prog (mapv parse-instr input)]
+  (for [i (range (count prog))
+        :when (#{:nop :jmp} (get-in prog [i 0]))
+        :let [prog (update-in prog [i 0] {:jmp :nop, :nop :jmp})
+              [inf data] (has-inf-loop prog)]
+        :when (not inf)]
+    (:acc data)))
+;; => (640)
+
