@@ -1,14 +1,15 @@
 (ns aoc2020.day9
-  (:require [clojure.java.io :as io]
-            [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [clojure.math.combinatorics :as comb]
+            [aoc2020.utils :refer [read-file]]))
 
 (def sample-input [35 20 15 25 47 40 62 55 65 95 102 117 150 182 127 219 299 277 309 576])
 
 (defn sum-of-2 [coll x]
-  (first (for [y coll
-               z coll
-               :when (and (not= y z) (= (+ y z) x))]
-           [y z])))
+  (->> (comb/combinations coll 2)
+       (map (partial apply +))
+       (filter #{x})
+       not-empty))
 
 (defn part-1 [input block-size]
   (loop [[window & rest] (partition (inc block-size) 1 input)]
