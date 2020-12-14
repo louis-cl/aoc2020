@@ -1,7 +1,7 @@
 (ns aoc2020.day14
   (:require [clojure.string :as str]
             [aoc2020.utils :refer [read-file]]
-            [clojure.test :refer [deftest testing is]]
+            [clojure.test :refer [deftest is]]
             [clojure.math.combinatorics :as combo]))
 
 
@@ -9,7 +9,6 @@
 mem[8] = 11
 mem[7] = 101
 mem[8] = 0")
-
 
 (defn str->bin [s]
   (read-string (str "2r" s)))
@@ -46,8 +45,10 @@ mem[8] = 0")
                  (bit-or (:or mask)))]
     (assoc memory (:addr instr) res)))
 
-(is (= (execute {:and 68719476733, :or 64} {} {:addr 8, :value 11})
-         {8 73}))
+(comment
+  (is (= (execute {:and 68719476733, :or 64} {} {:addr 8, :value 11})
+                {8 73}))
+  )
 
 (defn part-1 [input]
   (let [input-instrs (parse input)]
@@ -100,8 +101,8 @@ mem[26] = 1
                        (bit-and (:and mask)) ; remove floating bits
                        (bit-or (:or mask)))
         addrs (->> (combo/subsets (:xs mask))
-                   (map (partial apply +))
-                   (map #(+ % base-addr)))]
+                   (map (partial apply +)) ; OR all bits, + gives a nice 0 default
+                   (map (partial + base-addr)))]
     (reduce (fn [mem addr] (assoc mem addr (:value instr)))
             memory 
             addrs)))
@@ -110,7 +111,7 @@ mem[26] = 1
   (is (= (execute-2 {:or 18, :and -34, :xs '(32 1)} {} {:addr 42, :value 100})
          {26 100, 27 100, 58 100, 59 100}))
   (execute-2 {:or 0, :xs '(8 2 1), :and -12} {} {:addr 26, :value 1})
-  )
+)
 
 (defn part-2 [input]
   (let [input-instrs (parse input read-mask-2)]
