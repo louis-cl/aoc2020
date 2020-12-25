@@ -20,7 +20,7 @@
 
 (defn part-1 [input]
   (let [{:keys [card door]} input
-        n-card (discrete-log card)]
+        n-card (discrete-log card 7)]
     (nth (discrete-exp door) n-card)))
 
 (comment
